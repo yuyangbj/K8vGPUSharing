@@ -1,0 +1,19 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: gpu-pod
+spec:
+  containers:
+  - name: gpu-container
+    image: tensorflow/tensorflow:1.10.0-rc1-gpu-py3
+    imagePullPolicy: IfNotPresent
+    command: ["python"]
+    args: ["-u", "-c", "import tensorflow as tf; import time; tf.enable_eager_execution(); print(tf.reduce_sum(tf.random_normal([1000, 1000]))); time.sleep(20)"]
+    resources:
+      requests:
+        nvidia.com/gpu: 1
+      limits:
+        nvidia.com/gpu: 1
+  restartPolicy: Never
+  nodeSelector:
+    virtual.gpu.type: v100-4q-4GB
